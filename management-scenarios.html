@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced Management Scenarios — Business School Examinations</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* ===== TOKENS ===== */
+    :root {
+      --navy:       #0D1B2A;
+      --navy-mid:   #1C3553;
+      --ivory:      #F6F2EB;
+      --jade:       #16796F;
+      --jade-dark:  #0E5249;
+      --jade-bg:    #EBF5F3;
+      --amber:      #B8750D;
+      --amber-bg:   #FEF4DF;
+      --text:       #1A1A1A;
+      --text-muted: #5A5A5A;
+      --border:     #DDD8CE;
+      --card:       #FFFFFF;
+    }
+
+    /* ===== RESET ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--ivory);
+      color: var(--text);
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 17px;
+      line-height: 1.75;
+    }
+
+    /* ===== HEADER ===== */
+    .site-header {
+      background: var(--navy);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 3px solid var(--jade);
+    }
+    .site-header__inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      height: 54px;
+    }
+    .site-header__brand {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: rgba(255,255,255,0.45);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      white-space: nowrap;
+    }
+    .site-header__nav {
+      display: flex;
+      gap: 4px;
+      list-style: none;
+      margin-left: auto;
+    }
+    .site-header__nav a {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: rgba(255,255,255,0.55);
+      text-decoration: none;
+      padding: 6px 13px;
+      border-radius: 3px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition: background 0.2s, color 0.2s;
+    }
+    .site-header__nav a:hover,
+    .site-header__nav a.is-active {
+      background: var(--jade);
+      color: #fff;
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      background: var(--navy);
+      color: #fff;
+      padding: 68px 24px 54px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 55% at 50% 115%, rgba(22,121,111,0.28) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero__eyebrow {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--jade);
+      margin-bottom: 16px;
+    }
+    .hero__title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(26px, 5vw, 50px);
+      font-weight: 700;
+      line-height: 1.15;
+      max-width: 680px;
+      margin: 0 auto 18px;
+    }
+    .hero__subtitle {
+      font-size: 16px;
+      color: rgba(255,255,255,0.6);
+      max-width: 520px;
+      margin: 0 auto 30px;
+      font-style: italic;
+    }
+    .hero__institutions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+    }
+    .hero__inst-tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      padding: 5px 15px;
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 2px;
+      color: rgba(255,255,255,0.7);
+    }
+
+    /* ===== LAYOUT ===== */
+    .layout {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 52px;
+      align-items: start;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar {
+      position: sticky;
+      top: 74px;
+    }
+    .sidebar__label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+    .sidebar__list { list-style: none; }
+    .sidebar__item {
+      border-left: 2px solid var(--border);
+      padding: 0 0 18px 16px;
+      transition: border-color 0.2s;
+    }
+    .sidebar__item:last-child { padding-bottom: 0; }
+    .sidebar__item.is-active { border-left-color: var(--jade); }
+    .sidebar__link {
+      text-decoration: none;
+      color: var(--text-muted);
+      font-size: 13px;
+      line-height: 1.4;
+      display: block;
+      transition: color 0.2s;
+    }
+    .sidebar__item.is-active .sidebar__link {
+      color: var(--jade-dark);
+      font-weight: 600;
+    }
+    .sidebar__link:hover { color: var(--jade); }
+    .sidebar__num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      display: block;
+      margin-bottom: 3px;
+      letter-spacing: 0.1em;
+      color: var(--amber);
+    }
+
+    /* ===== SCENARIO ===== */
+    .scenario { margin-bottom: 72px; }
+    .scenario:last-child { margin-bottom: 0; }
+
+    .scenario__header {
+      border-top: 3px solid var(--navy);
+      padding-top: 26px;
+      margin-bottom: 22px;
+    }
+    .scenario__num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .scenario__title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(20px, 3vw, 27px);
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.25;
+      margin-bottom: 16px;
+    }
+
+    /* ===== FRAMEWORK TAGS ===== */
+    .framework-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 24px;
+    }
+    .framework-tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.09em;
+      padding: 4px 11px;
+      background: var(--jade-bg);
+      color: var(--jade-dark);
+      border: 1px solid rgba(22,121,111,0.22);
+      border-radius: 2px;
+      text-transform: uppercase;
+    }
+
+    /* ===== CONTEXT ===== */
+    .context {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      margin-bottom: 28px;
+      overflow: hidden;
+    }
+    .context__toggle {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-align: left;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      transition: background 0.15s;
+    }
+    .context__toggle:hover { background: var(--ivory); }
+    .context__icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 1px solid var(--jade);
+      color: var(--jade);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      line-height: 1;
+      transition: background 0.2s, color 0.2s;
+      flex-shrink: 0;
+    }
+    .context__toggle:hover .context__icon {
+      background: var(--jade);
+      color: #fff;
+    }
+    .context__body {
+      padding: 0 20px 20px;
+      border-top: 1px solid var(--border);
+      display: none;
+    }
+    .context__body.is-open { display: block; }
+    .context__body p {
+      font-size: 15px;
+      color: #3A3A3A;
+      margin-top: 14px;
+    }
+
+    /* ===== CHALLENGES ===== */
+    .challenges__label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+    .challenge {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+    .challenge__header {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 18px 20px;
+    }
+    .challenge__num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--amber);
+      flex-shrink: 0;
+      padding-top: 2px;
+      width: 22px;
+    }
+    .challenge__question {
+      font-size: 16px;
+      color: var(--navy);
+      flex: 1;
+      line-height: 1.55;
+    }
+    .challenge__btn {
+      background: none;
+      border: 1px solid rgba(22,121,111,0.35);
+      cursor: pointer;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      color: var(--jade);
+      padding: 5px 12px;
+      border-radius: 3px;
+      flex-shrink: 0;
+      margin-top: 2px;
+      transition: background 0.2s, color 0.2s;
+      text-transform: uppercase;
+    }
+    .challenge__btn:hover,
+    .challenge__btn.is-open {
+      background: var(--jade);
+      color: #fff;
+      border-color: var(--jade);
+    }
+    .challenge__answer {
+      display: none;
+      border-top: 1px solid var(--border);
+      background: #F9F8F5;
+    }
+    .challenge__answer.is-open { display: block; }
+
+    /* ===== ANSWER ===== */
+    .answer {
+      padding: 20px 20px 20px 56px;
+    }
+    .answer__label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--jade);
+      margin-bottom: 14px;
+    }
+    .answer h4 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--navy);
+      margin: 16px 0 5px;
+    }
+    .answer h4:first-of-type { margin-top: 0; }
+    .answer p {
+      font-size: 15px;
+      line-height: 1.78;
+      color: #2E2E2E;
+    }
+    .answer strong { color: var(--navy-mid); }
+
+    /* ===== CITATION ===== */
+    .cite {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9px;
+      vertical-align: super;
+      color: var(--amber);
+      letter-spacing: 0;
+    }
+
+    /* ===== FOOTER ===== */
+    .site-footer {
+      border-top: 1px solid var(--border);
+      text-align: center;
+      padding: 28px 24px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 760px) {
+      .layout {
+        grid-template-columns: 1fr;
+        padding: 32px 16px 60px;
+      }
+      .sidebar { display: none; }
+      .hero { padding: 48px 16px 40px; }
+      .answer { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="site-header__inner">
+    <span class="site-header__brand">Mgmt · Exam Scenarios</span>
+    <nav aria-label="Scenarios">
+      <ul class="site-header__nav">
+        <li><a href="#scenario-1">Scenario 1</a></li>
+        <li><a href="#scenario-2">Scenario 2</a></li>
+        <li><a href="#scenario-3">Scenario 3</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="hero__eyebrow">Advanced Business Management</p>
+  <h1 class="hero__title">Multi-Framework Examination Scenarios</h1>
+  <p class="hero__subtitle">Designed for simultaneous application of competing management frameworks to complex, realistic business problems.</p>
+  <div class="hero__institutions">
+    <span class="hero__inst-tag">LUMS</span>
+    <span class="hero__inst-tag">IBA</span>
+    <span class="hero__inst-tag">KSBL</span>
+    <span class="hero__inst-tag">MAJU</span>
+  </div>
+</section>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" aria-label="Scenario navigation">
+    <p class="sidebar__label">Scenarios</p>
+    <ul class="sidebar__list">
+      <li class="sidebar__item" data-target="scenario-1">
+        <a href="#scenario-1" class="sidebar__link">
+          <span class="sidebar__num">01</span>
+          Indus Textiles White-Water Transition
+        </a>
+      </li>
+      <li class="sidebar__item" data-target="scenario-2">
+        <a href="#scenario-2" class="sidebar__link">
+          <span class="sidebar__num">02</span>
+          Raast Disruptor &amp; HR Strategy
+        </a>
+      </li>
+      <li class="sidebar__item" data-target="scenario-3">
+        <a href="#scenario-3" class="sidebar__link">
+          <span class="sidebar__num">03</span>
+          Hospitality Pivot &amp; Competitive Strategy
+        </a>
+      </li>
+    </ul>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main>
+
+    <!-- ===== SCENARIO 1 ===== -->
+    <section class="scenario" id="scenario-1">
+      <div class="scenario__header">
+        <p class="scenario__num">Scenario 01</p>
+        <h2 class="scenario__title">The "White-Water" Transition of Indus Textiles</h2>
+        <div class="framework-tags" aria-label="Frameworks tested">
+          <span class="framework-tag">VUCA</span>
+          <span class="framework-tag">Woodward's Technology</span>
+          <span class="framework-tag">Goal Theory</span>
+          <span class="framework-tag">Mechanistic vs Organic</span>
+          <span class="framework-tag">Resistance to Change</span>
+          <span class="framework-tag">Organizational Culture</span>
+        </div>
+      </div>
+
+      <div class="context">
+        <button class="context__toggle" aria-expanded="false" aria-controls="ctx-1">
+          <span>Read Case Context</span>
+          <span class="context__icon" aria-hidden="true">+</span>
+        </button>
+        <div class="context__body" id="ctx-1">
+          <p>Indus Textiles, a legacy conglomerate in Faisalabad, has historically operated in a <strong>"Calm Waters"</strong> environment, relying on mass production of standard cotton fabrics for stable international buyers.<span class="cite">[1,2]</span> However, the environment has shifted into a <strong>VUCA reality</strong>: Rupee volatility, soaring energy prices, and AI-driven fast-fashion competitors have created <strong>"White-water rapids"</strong> conditions.<span class="cite">[2,3]</span></p>
+          <p>The Board announced a <strong>Stated Goal</strong> of "becoming the most innovative, sustainable textile hub in South Asia." The <strong>Real Goal</strong>, however, remains maximizing immediate cash flow to service debts — leading to a freeze on new equipment.<span class="cite">[4]</span> The current structure is highly <strong>Mechanistic</strong>, with narrow spans of control and high centralization.<span class="cite">[5,6]</span> Employees are resisting the move toward sustainable "Process Production," fearing their mass-production skills will become obsolete.<span class="cite">[1,7]</span></p>
+        </div>
+      </div>
+
+      <p class="challenges__label">Examination Challenges</p>
+
+      <div class="challenge">
+        <div class="challenge__header">
+          <span class="challenge__num">Q1</span>
+          <p class="challenge__question"><strong>Analyze</strong> the structural-technology mismatch using Woodward's findings.</p>
+          <button class="challenge__btn">View Answer</button>
+        </div>
+        <div class="challenge__answer">
+          <div class="answer">
+            <p class="answer__label">Model Answer — Structural-Technology Mismatch</p>
+            <h4>Application</h4>
+            <p>Indus Textiles currently uses <strong>Mass Production</strong> (large batches), which Woodward's research suggests works best with a <strong>Mechanistic structure</strong> — rigid, tight controls.<span class="cite">[1,8]</span></p>
+            <h4>Conflict</h4>
+            <p>To achieve "innovative, sustainable" products, the firm is moving toward <strong>Process Production</strong> (continuous processes for technical textiles). Woodward's findings state that Process Production requires an <strong>Organic structure</strong> — flexible, adaptive, and with more vertical differentiation to manage technical complexity.<span class="cite">[5,8]</span></p>
+            <h4>Conclusion</h4>
+            <p>The firm's current mechanistic structure (high formalization and centralization) will stifle the flexibility demanded by the new technology.<span class="cite">[6]</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="challenge">
+        <div class="challenge__header">
+          <span class="challenge__num">Q2</span>
+          <p class="challenge__question"><strong>Evaluate</strong> the discrepancy between stated and real goals and its impact on employee trust.</p>
+          <button class="challenge__btn">View Answer</button>
+        </div>
+        <div class="challenge__answer">
+          <div class="answer">
+            <p class="answer__label">Model Answer — Stated vs. Real Goals</p>
+            <h4>Theory</h4>
+            <p><strong>Stated goals</strong> are the official public pronouncements (Sustainability), while <strong>Real goals</strong> are evidenced by what members actually do — debt repayment and cost-cutting.<span class="cite">[4]</span></p>
+            <h4>Impact on Trust</h4>
+            <p>This discrepancy creates a "goal mismatch," a primary source of <strong>resistance to change</strong>.<span class="cite">[7]</span> Employees see the "Sustainability" goal as a hollow slogan because resource allocation (freezing new equipment) directly supports the real goal of short-term cash preservation. This destroys the "Role Modeling" and "Trust" necessary for cultural change.<span class="cite">[9,10]</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="challenge">
+        <div class="challenge__header">
+          <span class="challenge__num">Q3</span>
+          <p class="challenge__question"><strong>Recommend</strong> a specific strategy to reduce resistance to change while transitioning the organizational culture.</p>
+          <button class="challenge__btn">View Answer</button>
+        </div>
+        <div class="challenge__answer">
+          <div class="answer">
+            <p class="answer__label">Model Answer — Resistance &amp; Culture Synthesis</p>
+            <h4>Resistance Technique</h4>
+            <p>Use <strong>Participation</strong>. Since employees fear obsolescence (uncertainty), involving them in redesigning the new sustainable "Process" lines allows them to apply their expertise and gain ownership of the transition.<span class="cite">[7,9]</span></p>
+            <h4>Cultural Shift</h4>
+            <p>Managers must <strong>"Tell new stories"</strong> and <strong>"Reward it."</strong><span class="cite">[9,10]</span> Instead of rewarding those who hit mass-production targets, provide incentives for those who experiment with sustainable methods — transitioning the culture from a focus on "ends" (volume) to an <strong>open-system mindset</strong> (innovation).<span class="cite">[11]</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SCENARIO 2 ===== -->
+    <section class="scenario" id="scenario-2">
+      <div class="scenario__header">
+        <p class="scenario__num">Scenario 02</p>
+        <h2 class="scenario__title">The Raast Disruptor &amp; HR Strategy</h2>
+        <div class="framework-tags" aria-label="Frameworks tested">
+          <span class="framework-tag">Disruptive Innovation</span>
+          <span class="framework-tag">Porter's Generic Strategies</span>
+          <span class="framework-tag">HR Planning</span>
+          <span class="framework-tag">Span of Control</span>
+          <span class="framework-tag">MBO</span>
+          <span class="framework-tag">Control Systems</span>
+        </div>
+      </div>
+
+      <div class="context">
+        <button class="context__toggle" aria-expanded="false" aria-controls="ctx-2">
+          <span>Read Case Context</span>
+          <span class="context__icon" aria-hidden="true">+</span>
+        </button>
+        <div class="context__body" id="ctx-2">
+          <p>"Zindigi-Tech" is a Karachi-based fintech startup aiming to provide <strong>Disruptive Innovation</strong> by replacing cash-only retail habits with <strong>Raast QR</strong> integrations.<span class="cite">[12]</span> Unlike traditional banks (Sustaining Innovation), Zindigi-Tech targets micro-entrepreneurs whom big banks find "unattractive" due to low margins.<span class="cite">[12]</span></p>
+          <p>The CEO wants a <strong>Differentiation Strategy</strong> based on "extreme customer intimacy,"<span class="cite">[13,14]</span> but <strong>HR Planning</strong> is in shambles: a high <strong>contingent workforce</strong> (freelancers) feels no loyalty to the firm's strategic goals.<span class="cite">[15]</span> The <strong>Span of Control</strong> for senior developers is 1:15, leading to significant <strong>Task Demands</strong> and <strong>Role Overload</strong>.<span class="cite">[10,16]</span></p>
+        </div>
+      </div>
+
+      <p class="challenges__label">Examination Challenges</p>
+
+      <div class="challenge">
+        <div class="challenge__header">
+          <span class="challenge__num">Q1</span>
+          <p class="challenge__question"><strong>Differentiate</strong> between the innovation type of Zindigi-Tech and a traditional bank's mobile app.</p>
+          <button class="challenge__btn">View Answer</button>
+        </div>
+        <div class="challenge__answer">
+          <div class="answer">
+            <p class="answer__label">Model Answer — Innovation Differentiation</p>
+            <h4>Zindigi-Tech: Disruptive Innovation</h4>
+            <p>They radically change industry rules by targeting the unbanked/micro-retailers that incumbents ignore. Disruptive innovation typically starts in small, low-margin markets that seem unattractive to established firms.<span class="cite">[12]</span></p>
+            <h4>Traditional Bank: Sustaining Innovation</h4>
+            <p>Adding a QR feature to an existing app is a <strong>sustaining innovation</strong> — it provides incremental improvements to an established product for existing, already-profitable customers.<span class="cite">[12]</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="challenge">
+        <div class="challenge__header">
+          <span class="challenge__num">Q2</span>
+          <p class="challenge__question"><strong>Justify</strong> a shift in HR practices to support a Differentiation strategy.</p>
+          <button class="challenge__btn">View Answer</button>
+        </div>
+        <div class="challenge__answer">
+          <div class="answer">
+            <p class="answer__label">Model Answer — HR Strategy Alignment</p>
+            <h4>Current State</h4>
+            <p>Relying purely on a <strong>contingent workforce</strong> (temporary/contract) is risky for a <strong>Differentiation strategy</strong>.<span class="cite">[13,15]</span></p>
+            <h4>Needed Shift</h4>
+            <p>To achieve "customer intimacy," HR must focus on <strong>Recruitment and Selection</strong> of culture-fit employees, followed by intense <strong>Orientation and Socialization</strong>.<span class="cite">[17,18]</span> They need <strong>"Idea Champions"</strong> and job security for experimentation to foster innovation.<span class="cite">[11,19]</span> High-skill differentiation requires retaining competent, high-performing employees — nearly impossible with purely contract-based staff.<span class="cite">[18]</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="challenge">
+        <div class="challenge__header">
+          <span class="challenge__num">Q3</span>
+          <p class="challenge__question"><strong>Design a Control System</strong> to manage the performance of the contingent workforce without stifling creativity.</p>
+          <button class="challenge__btn">View Answer</button>
+        </div>
+        <div class="challenge__answer">
+          <div class="answer">
+            <p class="answer__label">Model Answer — Control System Design</p>
+            <h4>The Problem</h4>
+            <p>A 1:15 <strong>Span of Control</strong> is too wide for complex, creative work and leads to performance deviations going undetected.<span class="cite">[16]</span></p>
+            <h4>The Design</h4>
+            <p>Use <strong>Management by Objectives (MBO)</strong>.<span class="cite">[20]</span> Instead of "Immediate Corrective Action," apply <strong>"Basic Corrective Action"</strong> — investigate <em>why</em> a developer missed a deadline (role overload vs. technical issue) before intervening.<span class="cite">[21]</span></p>
+            <h4>Standards</h4>
+            <p>Establish a <strong>Range of Variation</strong> that accommodates creative "failures" while strictly monitoring "Customer Intimacy" metrics through <strong>Digital Business Intelligence tools</strong> (e.g., app penetration data, resolution times).<span class="cite">[21,22]</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SCENARIO 3 ===== -->
+    <section class="scenario" id="scenario-3">
+      <div class="scenario__header">
+        <p class="scenario__num">Scenario 03</p>
+        <h2 class="scenario__title">The Hospitality Pivot: Competitive Strategy &amp; Leadership</h2>
+        <div class="framework-tags" aria-label="Frameworks tested">
+          <span class="framework-tag">Competitive Advantage</span>
+          <span class="framework-tag">Cost Leadership vs Focus</span>
+          <span class="framework-tag">Functional Strategy</span>
+          <span class="framework-tag">MBO vs Traditional Goal-Setting</span>
+          <span class="framework-tag">Leadership Traits</span>
+          <span class="framework-tag">Stress Management</span>
+        </div>
+      </div>
+
+      <div class="context">
+        <button class="context__toggle" aria-expanded="false" aria-controls="ctx-3">
+          <span>Read Case Context</span>
+          <span class="context__icon" aria-hidden="true">+</span>
+        </button>
+        <div class="context__body" id="ctx-3">
+          <p>A luxury hotel chain in Malam Jabba faces a <strong>Competitive Necessity</strong>: all hotels now offer high-speed internet and basic safety — these are table stakes, not differentiators.<span class="cite">[13]</span> To gain a real <strong>Competitive Advantage</strong>, the manager pivots from <strong>Cost Leadership</strong> (lowest room rates) to a <strong>Focus Strategy</strong> targeting high-end international researchers.<span class="cite">[13,14]</span></p>
+          <p>This requires a change in <strong>Functional Strategy</strong>: Marketing must overhaul its "pricing logic," and HR must transform "employee attitudes."<span class="cite">[23,24]</span> The manager currently uses <strong>Traditional Goal-Setting</strong> — top-level targets pushed down — which has produced high <strong>Stress</strong> and <strong>Interpersonal Demands</strong> throughout the organization.<span class="cite">[10,20]</span></p>
+        </div>
+      </div>
+
+      <p class="challenges__label">Examination Challenges</p>
+
+      <div class="challenge">
+        <div class="challenge__header">
+          <span class="challenge__num">Q1</span>
+          <p class="challenge__question"><strong>Interpret</strong> the shift in Functional Strategy required for the HR department.</p>
+          <button class="challenge__btn">View Answer</button>
+        </div>
+        <div class="challenge__answer">
+          <div class="answer">
+            <p class="answer__label">Model Answer — Functional Strategy Shift</p>
+            <h4>Under Cost Leadership</h4>
+            <p>HR's functional strategy focused on minimizing labor costs and hiring staff for basic operational efficiency.<span class="cite">[14]</span></p>
+            <h4>Under Focus / Differentiation Strategy</h4>
+            <p>HR must pivot to hiring specialized staff — those with scientific or multilingual backgrounds — and providing intensive <strong>Training and Development</strong> to deliver the "unique" service environment international researchers require.<span class="cite">[14,18,25]</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="challenge">
+        <div class="challenge__header">
+          <span class="challenge__num">Q2</span>
+          <p class="challenge__question"><strong>Compare</strong> the current Traditional Goal-Setting with an MBO approach for this specific pivot.</p>
+          <button class="challenge__btn">View Answer</button>
+        </div>
+        <div class="challenge__answer">
+          <div class="answer">
+            <p class="answer__label">Model Answer — Traditional Goal-Setting vs. MBO</p>
+            <h4>Traditional Goal-Setting</h4>
+            <p>Goals are set at the top and broken into subgoals for each level. The risk: top-level "Stated Goals" may not be actionable for front-line staff, generating confusion and disengagement.<span class="cite">[20]</span></p>
+            <h4>MBO</h4>
+            <p>Goals are <strong>mutually agreed upon</strong>. This is superior for this pivot because front-desk staff in Malam Jabba possess better <strong>Competitor Intelligence</strong> about what researchers actually need.<span class="cite">[20,26]</span> MBO also provides structured <strong>Performance Feedback</strong> that directly reduces "Role Ambiguity" — one of the key stressors in the current environment.<span class="cite">[10,20]</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="challenge">
+        <div class="challenge__header">
+          <span class="challenge__num">Q3</span>
+          <p class="challenge__question"><strong>Recommend</strong> how the manager can use Leadership traits and Control mechanisms to reduce dysfunctional stress during the transition.</p>
+          <button class="challenge__btn">View Answer</button>
+        </div>
+        <div class="challenge__answer">
+          <div class="answer">
+            <p class="answer__label">Model Answer — Leadership, Control &amp; Stress Management</p>
+            <h4>Leadership</h4>
+            <p>The manager must exhibit <strong>Influencing</strong> traits — specifically acting as a <strong>Change Agent</strong> who personally models the new luxury service values and sets visible behavioral standards.<span class="cite">[3,9,27]</span></p>
+            <h4>Control</h4>
+            <p>Rather than "tight controls" (Mechanistic), transition to an <strong>Organic control style</strong> that focuses on "ends" (guest experience outcomes) rather than prescribing "means" (exact service scripts).<span class="cite">[11]</span></p>
+            <h4>Stress Reduction</h4>
+            <p>Provide <strong>Realistic Job Previews</strong> for the new focus strategy and apply <strong>Facilitation and Support</strong> (coaching) to help employees meet elevated service demands.<span class="cite">[9,28]</span> Clarifying the new strategic direction reduces <strong>Role Conflict</strong> — a primary driver of dysfunctional stress.<span class="cite">[10,28]</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  Advanced Management · Business School Examination Material · LUMS · IBA · KSBL · MAJU
+</footer>
+
+<script>
+  // ── Context accordion ──
+  document.querySelectorAll('.context__toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const bodyId = btn.getAttribute('aria-controls');
+      const body = document.getElementById(bodyId);
+      const icon = btn.querySelector('.context__icon');
+      const isOpen = body.classList.toggle('is-open');
+      btn.setAttribute('aria-expanded', String(isOpen));
+      icon.textContent = isOpen ? '−' : '+';
+    });
+  });
+
+  // ── Challenge answer toggle ──
+  document.querySelectorAll('.challenge__btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const answer = btn.closest('.challenge').querySelector('.challenge__answer');
+      const isOpen = answer.classList.toggle('is-open');
+      btn.classList.toggle('is-open', isOpen);
+      btn.textContent = isOpen ? 'Hide Answer' : 'View Answer';
+    });
+  });
+
+  // ── Scroll-spy: sidebar + header nav ──
+  const scenarios   = document.querySelectorAll('.scenario');
+  const sideItems   = document.querySelectorAll('.sidebar__item');
+  const headerLinks = document.querySelectorAll('.site-header__nav a');
+
+  const spy = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const id = entry.target.id;
+      sideItems.forEach(el => el.classList.toggle('is-active', el.dataset.target === id));
+      headerLinks.forEach(a => a.classList.toggle('is-active', a.getAttribute('href') === '#' + id));
+    });
+  }, { threshold: 0.35 });
+
+  scenarios.forEach(s => spy.observe(s));
+</script>
+
+</body>
+</html>
